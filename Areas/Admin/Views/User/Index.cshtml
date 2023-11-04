@@ -1,0 +1,142 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<ShopBanHoa.Areas.Admin.Models.Account>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+
+    <link href="~/Assets/admin/css/custom-pagination.css" rel="stylesheet" />
+    <title>Index</title>
+    <style>
+        .pagination {
+            display: flex;
+            padding-left: 0;
+            list-style: none;
+            border-radius: 0.25rem;
+        }
+
+            .pagination a {
+                color: black;
+                border: 1px solid transparent;
+                border-radius: 50%;
+                padding: 0;
+                min-width: 2rem;
+                line-height: 2rem;
+                height: 2rem;
+                text-align: center;
+                margin: 0px 5px;
+                display: block;
+                position: relative;
+            }
+
+            .pagination .page-item.active a {
+                background: #3f87f5;
+                border-color: transparent;
+            }
+
+        .page-item.active a {
+            z-index: 1;
+            color: #fff;
+        }
+
+        .pagination .page-item.active {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Quản lý khách hàng</h1>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="btn btn-default">
+                @Html.ActionLink("Thêm khách hàng", "Create")
+
+            </div>
+        </div>
+       
+        <div class="col-md-9">
+            @using (Html.BeginForm("Index", "User", FormMethod.Post))
+            {
+            <div class="row">
+                <div class="col-md-8 p-0 text-right">
+                    <input type="text" name="searchstring" value="@ViewBag.Search" class="p-2"/>
+                </div>
+
+                <div class="col-md-4 pxy-2">
+                    <button type="submit" class="btn btn-secondary">Tìm kiếm</button>
+                </div>
+            </div>
+                
+            }
+        </div>
+        
+
+
+    </div>
+
+    <div>
+        <div class="m-t-25">
+            <table id="data-table" class="table">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                        <th>Họ và tên</th>                    
+                        <th>Ngày tạo</th>
+                        <th>Chức năng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Email</td>
+                            <td>@item.Phone</td>
+                            <td>@item.FullName</td>
+                            <td>@item.CreateDate</td>
+                           
+                            <td>
+                                @Html.ActionLink("Sửa", "Edit", new { id = item.AccountID }) |
+                                @Html.ActionLink("Xóa", "Delete", new { id = item.AccountID })
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Tên đăng nhập</th>
+                        <th>Mật khẩu</th>
+                        <th>Số điện thoại</th>
+                        <th>Email</th>
+                        <th>Họ và tên</th>
+                        <th>Ngày tạo</th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+            @Html.PagedListPager(Model,
+                page => Url.Action("Index", new { page , @searchstring = @ViewBag.Search }),
+                new PagedListRenderOptions {
+
+                    UlElementClasses = new[] { "pagination",},
+
+                    LiElementClasses = new string[] { "page-item" }
+
+                })
+
+
+
+
+        </div>
+    </div>
+
+</body>
+</html>
